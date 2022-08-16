@@ -33,7 +33,14 @@ const likeCard = (req, res) => {
     { new: true },
   )
     .then((card) => res.status(200).send({ data: card }))
-    .catch((err) => res.status(500).send({ message: `Запрашиваемая карточка не найдена. Ошибка: ${err}` }));
+    .catch((err) => {
+      console.log(err.name);
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля.' });
+      } else {
+        res.status(500).send({ message: `Ошибка сервера: ${err}` });
+      }
+    });
 };
 
 const dislikeCard = (req, res) => {

@@ -7,9 +7,9 @@ const createCard = (req, res) => {
     .then((card) => res.status(201).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля.' });
+        res.status(400).send({ message: 'Переданы некорректные данные при создании карточки.' });
       } else {
-        res.status(500).send({ message: `Ошибка сервера: ${err}` });
+        res.status(500).send({ message: 'Ошибка по умолчанию' });
       }
     });
 };
@@ -17,18 +17,18 @@ const createCard = (req, res) => {
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.id)
     .orFail(() => {
-      const error = new Error('Пользователь по заданному id отсутствует в базе');
+      const error = new Error('Карточка с указанным _id не найдена.');
       error.statusCode = 404;
       throw error;
     })
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Указан некорректный id пользователя' });
+        res.status(400).send({ message: 'Переданы некорректные данные при создании карточки.' });
       } else if (err.statusCode === 404) {
-        res.status(404).send({ message: 'Пользователь по заданному id отсутствует в базе' });
+        res.status(404).send({ message: 'Карточка с указанным _id не найдена.' });
       } else {
-        res.status(500).send({ message: `Ошибка сервера: ${err}` });
+        res.status(500).send({ message: 'Ошибка по умолчанию' });
       }
     });
 };
@@ -36,7 +36,7 @@ const deleteCard = (req, res) => {
 const getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.status(200).send(cards))
-    .catch((err) => res.status(500).send({ message: `Запрашиваемая карточка не найдена. Ошибка: ${err}` }));
+    .catch(() => res.status(500).send({ message: 'Ошибка по умолчанию' }));
 };
 
 const likeCard = (req, res) => {
@@ -46,18 +46,18 @@ const likeCard = (req, res) => {
     { new: true },
   )
     .orFail(() => {
-      const error = new Error('Пользователь по заданному id отсутствует в базе');
+      const error = new Error('Карточка с указанным _id не найдена.');
       error.statusCode = 404;
       throw error;
     })
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Указан некорректный id пользователя' });
+        res.status(400).send({ message: 'Переданы некорректные данные при создании карточки.' });
       } else if (err.statusCode === 404) {
-        res.status(404).send({ message: 'Пользователь по заданному id отсутствует в базе' });
+        res.status(404).send({ message: 'Карточка с указанным _id не найдена.' });
       } else {
-        res.status(500).send({ message: `Ошибка сервера: ${err}` });
+        res.status(500).send({ message: 'Ошибка по умолчанию' });
       }
     });
 };
@@ -69,18 +69,18 @@ const dislikeCard = (req, res) => {
     { new: true },
   )
     .orFail(() => {
-      const error = new Error('Пользователь по заданному id отсутствует в базе');
+      const error = new Error('Карточка с указанным _id не найдена.');
       error.statusCode = 404;
       throw error;
     })
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Указан некорректный id пользователя' });
+        res.status(400).send({ message: 'Переданы некорректные данные при создании карточки.' });
       } else if (err.statusCode === 404) {
-        res.status(404).send({ message: 'Пользователь по заданному id отсутствует в базе' });
+        res.status(404).send({ message: 'Карточка с указанным _id не найдена.' });
       } else {
-        res.status(500).send({ message: `Ошибка сервера: ${err}` });
+        res.status(500).send({ message: 'Ошибка по умолчанию' });
       }
     });
 };

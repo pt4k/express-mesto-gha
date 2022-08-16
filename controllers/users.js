@@ -5,9 +5,9 @@ const createUser = (req, res) => {
     .then((user) => res.status(201).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля.' });
+        res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя.' });
       } else {
-        res.status(500).send({ message: `Ошибка сервера: ${err}` });
+        res.status(500).send({ message: 'Ошибка по умолчанию.' });
       }
     });
 };
@@ -15,18 +15,18 @@ const createUser = (req, res) => {
 const getUser = (req, res) => {
   User.findById(req.params.id)
     .orFail(() => {
-      const error = new Error('Пользователь по заданному id отсутствует в базе');
+      const error = new Error('Пользователь по указанному _id не найден.');
       error.statusCode = 404;
       throw error;
     })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Указан некорректный id пользователя' });
+        res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя.' });
       } else if (err.statusCode === 404) {
-        res.status(404).send({ message: 'Пользователь по заданному id отсутствует в базе' });
+        res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
       } else {
-        res.status(500).send({ message: `Ошибка сервера: ${err}` });
+        res.status(500).send({ message: 'Ошибка по умолчанию.' });
       }
     });
 };
@@ -34,7 +34,9 @@ const getUser = (req, res) => {
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(200).send(users))
-    .catch((err) => res.status(500).send({ message: `Запрашиваемый пользователь не найден. Ошибка: ${err}` }));
+    .catch(() => {
+      res.status(500).send({ message: 'Ошибка по умолчанию.' });
+    });
 };
 
 const patchUser = (req, res) => {
@@ -43,11 +45,10 @@ const patchUser = (req, res) => {
   User.findByIdAndUpdate(id, { name, about }, { new: true, runValidators: true, upsert: true })
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
-      console.log(err.name);
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля.' });
+        res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
       } else {
-        res.status(500).send({ message: `Ошибка сервера: ${err}` });
+        res.status(500).send({ message: 'Ошибка по умолчанию.' });
       }
     });
 };
@@ -57,9 +58,8 @@ const patchAvatar = (req, res) => {
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .then((user) => {
       res.send({ data: user });
-      console.log(user);
     })
-    .catch((err) => res.status(500).send({ message: `Запрашиваемый пользователь не найден. Ошибка: ${err}` }));
+    .catch(() => res.status(500).send({ message: 'Ошибка по умолчанию.' }));
 };
 
 module.exports = {

@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    minlenght: 2,
+    minlength: 2,
     maxlenght: 30,
   },
   about: {
@@ -19,6 +19,4 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-const User = mongoose.model('user', userSchema);
-
-module.exports = User;
+module.exports = mongoose.model('user', userSchema);

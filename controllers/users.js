@@ -4,6 +4,7 @@ const createUser = (req, res) => {
   User.create(req.body)
     .then((user) => res.status(201).send(user))
     .catch((err) => {
+      console.log(err.name);
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные в методы создания карточки, пользователя, обновления аватара пользователя или профиля.' });
       } else {

@@ -48,8 +48,6 @@ const patchUser = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(VALID_ERROR_CODE).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
-      } else if (err.statusCode === 404) {
-        res.status(NOTFOUND_ERROR_CODE).send({ message: 'Пользователь c указанным _id не найден.' });
       } else {
         res.status(DEFAULT_ERROR_CODE).send({ message: 'Ошибка по умолчанию.' });
       }
@@ -65,8 +63,6 @@ const patchAvatar = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(VALID_ERROR_CODE).send({ message: 'Переданы некорректные данные при обновлении аватара.' });
-      } else if (err.statusCode === NOTFOUND_ERROR_CODE) {
-        res.status(NOTFOUND_ERROR_CODE).send({ message: 'Пользователь c указаныым _id не найден.' });
       } else {
         res.status(DEFAULT_ERROR_CODE).send({ message: 'Ошибка по умолчанию.' });
       }

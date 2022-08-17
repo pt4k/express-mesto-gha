@@ -1,4 +1,5 @@
 const Card = require('../models/card');
+const { VALID_ERROR_CODE, NOTFOUND_ERROR_CODE, DEFAULT_ERROR_CODE } = require('../errors/errors');
 
 const createCard = (req, res) => {
   const { name, link } = req.body;
@@ -7,9 +8,9 @@ const createCard = (req, res) => {
     .then((card) => res.status(201).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при создании карточки.' });
+        res.status(VALID_ERROR_CODE).send({ message: 'Переданы некорректные данные при создании карточки.' });
       } else {
-        res.status(500).send({ message: 'Ошибка по умолчанию' });
+        res.status(DEFAULT_ERROR_CODE).send({ message: 'Ошибка по умолчанию' });
       }
     });
 };
@@ -18,25 +19,25 @@ const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.id)
     .orFail(() => {
       const error = new Error('Карточка с указанным _id не найдена.');
-      error.statusCode = 404;
+      error.statusCode = NOTFOUND_ERROR_CODE;
       throw error;
     })
-    .then((card) => res.status(200).send({ data: card }))
+    .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при создании карточки.' });
-      } else if (err.statusCode === 404) {
-        res.status(404).send({ message: 'Карточка с указанным _id не найдена.' });
+        res.status(VALID_ERROR_CODE).send({ message: 'Переданы некорректные данные при создании карточки.' });
+      } else if (err.statusCode === NOTFOUND_ERROR_CODE) {
+        res.status(NOTFOUND_ERROR_CODE).send({ message: 'Карточка с указанным _id не найдена.' });
       } else {
-        res.status(500).send({ message: 'Ошибка по умолчанию' });
+        res.status(DEFAULT_ERROR_CODE).send({ message: 'Ошибка по умолчанию' });
       }
     });
 };
 
 const getCards = (req, res) => {
   Card.find({})
-    .then((cards) => res.status(200).send(cards))
-    .catch(() => res.status(500).send({ message: 'Ошибка по умолчанию' }));
+    .then((cards) => res.send(cards))
+    .catch(() => res.status(DEFAULT_ERROR_CODE).send({ message: 'Ошибка по умолчанию' }));
 };
 
 const likeCard = (req, res) => {
@@ -47,17 +48,17 @@ const likeCard = (req, res) => {
   )
     .orFail(() => {
       const error = new Error('Карточка с указанным _id не найдена.');
-      error.statusCode = 404;
+      error.statusCode = NOTFOUND_ERROR_CODE;
       throw error;
     })
-    .then((card) => res.status(200).send({ data: card }))
+    .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при создании карточки.' });
-      } else if (err.statusCode === 404) {
-        res.status(404).send({ message: 'Карточка с указанным _id не найдена.' });
+        res.status(VALID_ERROR_CODE).send({ message: 'Переданы некорректные данные при создании карточки.' });
+      } else if (err.statusCode === NOTFOUND_ERROR_CODE) {
+        res.status(NOTFOUND_ERROR_CODE).send({ message: 'Карточка с указанным _id не найдена.' });
       } else {
-        res.status(500).send({ message: 'Ошибка по умолчанию' });
+        res.status(DEFAULT_ERROR_CODE).send({ message: 'Ошибка по умолчанию' });
       }
     });
 };
@@ -70,17 +71,17 @@ const dislikeCard = (req, res) => {
   )
     .orFail(() => {
       const error = new Error('Карточка с указанным _id не найдена.');
-      error.statusCode = 404;
+      error.statusCode = NOTFOUND_ERROR_CODE;
       throw error;
     })
-    .then((card) => res.status(200).send({ data: card }))
+    .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при создании карточки.' });
-      } else if (err.statusCode === 404) {
-        res.status(404).send({ message: 'Карточка с указанным _id не найдена.' });
+        res.status(VALID_ERROR_CODE).send({ message: 'Переданы некорректные данные при создании карточки.' });
+      } else if (err.statusCode === NOTFOUND_ERROR_CODE) {
+        res.status(NOTFOUND_ERROR_CODE).send({ message: 'Карточка с указанным _id не найдена.' });
       } else {
-        res.status(500).send({ message: 'Ошибка по умолчанию' });
+        res.status(DEFAULT_ERROR_CODE).send({ message: 'Ошибка по умолчанию' });
       }
     });
 };

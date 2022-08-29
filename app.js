@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
 const express = require('express');
+const mongoose = require('mongoose');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');

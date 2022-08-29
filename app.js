@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const { celebrate, Joi, errors } = require('celebrate');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
@@ -15,8 +16,18 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use(express.json());
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required(),
+    password: Joi.string().required().min(8),
+  }),
+}), login);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required(),
+    password: Joi.string().required().min(8),
+  }),
+}), createUser);
 
 app.use(auth);
 app.use('/', usersRouter, cardsRouter);
@@ -27,6 +38,7 @@ app.use((req, res) => {
 app.use((req, res) => {
   res.status(NOTFOUND_ERROR_CODE).send({ message: 'Страница по указанному маршруту не найдена' });
 });
+app.use(errors());
 app.use(err);
 
 app.listen(PORT, () => {

@@ -7,9 +7,10 @@ const NotFoundError = require('../errors/NotFoundError');
 const {
   VALID_ERROR_CODE, NOTFOUND_ERROR_CODE, DEFAULT_ERROR_CODE, AUTH_ERROR_CODE,
 } = require('../errors/errors');
+const SALT_ROUNDS = 10;
 
 const createUser = (req, res) => {
-  bcrypt.hash(req.body.password, 10)
+  bcrypt.hash(req.body.password, SALT_ROUNDS)
     .then((hash) => User.create({
       email: req.body.email,
       password: hash,
@@ -18,7 +19,6 @@ const createUser = (req, res) => {
       avatar: req.body.avatar,
     }))
     .then((user) => {
-      console.log(user);
       if (!user) {
         throw new NotFoundError('Переданы некорректные данные при создании пользователя.');
       }
@@ -107,29 +107,21 @@ const login = (req, res) => {
     });
 };
 
-/*
 const getUserMe = (req, res, next) => {
-  console.log(req.params);
-  User.findById(req.params.id)
+  const userId = req.user._id;
+
+  User.findById(userId)
     .orFail(() => {
       const error = new Error('Пользователь по указанному _id не найден.');
       error.statusCode = NOTFOUND_ERROR_CODE;
       throw error;
     })
-    if (req.user._id) {
-
-    }
     .then((user) => {
-      if (!user) {
-        throw new ValidError('Переданы некорректные данные при создании пользователя.');
-      }
       res.send(user);
     })
     .catch(next);
 };
-*/
 
 module.exports = {
-  createUser, getUser, getUsers, patchUser, patchAvatar, login,
-  // getUserMe,
+  createUser, getUser, getUsers, patchUser, patchAvatar, login, getUserMe,
 };

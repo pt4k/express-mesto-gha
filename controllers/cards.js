@@ -17,16 +17,26 @@ const createCard = (req, res, next) => {
 };
 
 const deleteCard = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.id)
+  const cardId = req.params.id;
+  const userId = req.user._id;
+
+  Card.findById(cardId)
     .orFail(() => {
       const error = new Error('Карточка с указанным _id не найдена.');
       error.statusCode = NOTFOUND_ERROR_CODE;
       throw error;
     })
     .then((card) => {
-      if (!card) {
-        throw new NotFoundError('Карточка с указанным _id не найдена.');
+      const cardOwner = card.owner.toString().replace('new ObjectId("', '');
+
+      if (userId !== cardOwner) {
+        const error = new Error('Невозможно удалить карточку другого пользователя.');
+        error.statusCode = NOTFOUND_ERROR_CODE;
+        throw error;
       }
+
+      card.remove();
+
       res.send({ data: card });
     })
     .catch(next);

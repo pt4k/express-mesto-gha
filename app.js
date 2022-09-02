@@ -46,5 +46,5 @@ app.use(err);
 
 app.listen(PORT, () => {
   // Если всё работает, консоль покажет, какой порт приложение слушает
-  console.log(`App listening on port ${PORT}`);
+  console.log(`Сервер запущен на порту ${PORT}`);
 });

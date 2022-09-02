@@ -2,11 +2,13 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const ValidError = require('../errors/ValidError');
-const AuthError = require('../errors/AuthError');
+// const AuthError = require('../errors/AuthError');
 const NotFoundError = require('../errors/NotFoundError');
-const { NOTFOUND_ERROR_CODE } = require('../errors/errors');
+const {
+  VALID_ERROR_CODE, NOTFOUND_ERROR_CODE, DEFAULT_ERROR_CODE, AUTH_ERROR_CODE,
+} = require('../errors/errors');
 
-const createUser = (req, res, next) => {
+const createUser = (req, res) => {
   bcrypt.hash(req.body.password, 10)
     .then((hash) => User.create({
       email: req.body.email,
@@ -16,12 +18,21 @@ const createUser = (req, res, next) => {
       avatar: req.body.avatar,
     }))
     .then((user) => {
+      console.log(user);
       if (!user) {
         throw new NotFoundError('Переданы некорректные данные при создании пользователя.');
       }
       res.status(201).send(user);
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res
+          .status(VALID_ERROR_CODE)
+          .send({ message: 'Переданы некорректные данные при создании пользователя.' });
+      } else {
+        res.status(DEFAULT_ERROR_CODE).send({ message: 'Ошибка по умолчанию.' });
+      }
+    });
 };
 
 const getUser = (req, res, next) => {
@@ -76,22 +87,49 @@ const patchAvatar = (req, res, next) => {
     .catch(next);
 };
 
-const login = (req, res, next) => {
+const login = (req, res) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      if (!user) {
+    /*
+    if (!user) {
         console.log(user);
         throw new AuthError('Неправильные почта или пароль');
-      }
+      } */
       const token = jwt.sign({ _id: user.id }, 'some-secret-key', { expiresIn: '7d' });
 
+      res.cookie('token', token, { httpOnly: true });
       res.send({ token });
+    })
+    .catch(() => {
+      res.status(AUTH_ERROR_CODE).send('Неправильные почта или пароль');
+    });
+};
+
+/*
+const getUserMe = (req, res, next) => {
+  console.log(req.params);
+  User.findById(req.params.id)
+    .orFail(() => {
+      const error = new Error('Пользователь по указанному _id не найден.');
+      error.statusCode = NOTFOUND_ERROR_CODE;
+      throw error;
+    })
+    if (req.user._id) {
+
+    }
+    .then((user) => {
+      if (!user) {
+        throw new ValidError('Переданы некорректные данные при создании пользователя.');
+      }
+      res.send(user);
     })
     .catch(next);
 };
+*/
 
 module.exports = {
   createUser, getUser, getUsers, patchUser, patchAvatar, login,
+  // getUserMe,
 };

@@ -8,8 +8,6 @@ const auth = require('./middlewares/auth');
 const err = require('./middlewares/errors');
 const { NOTFOUND_ERROR_CODE, AUTH_ERROR_CODE } = require('./errors/errors');
 
-const urlRegExp = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:\/?#[\]@!$&'()*+,;=.]+$/;
-
 const app = express();
 
 const { PORT = 3000 } = process.env;
@@ -33,7 +31,7 @@ app.post('/signup', celebrate({
     password: Joi.string().required().min(8),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().match(urlRegExp),
+    avatar: Joi.string(),
   }),
 }), createUser);
 

@@ -1,7 +1,6 @@
 const Card = require('../models/card');
 const NotFoundError = require('../errors/NotFoundError');
 const ValidError = require('../errors/ValidError');
-const DefaultError = require('../errors/DefaultError');
 const ConflictError = require('../errors/ConflictError');
 
 const createCard = (req, res, next) => {
@@ -49,9 +48,6 @@ const deleteCard = (req, res, next) => {
 const getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => {
-      if (!cards) {
-        throw new DefaultError('Ошибка по умолчанию');
-      }
       res.send(cards);
     })
     .catch(next);

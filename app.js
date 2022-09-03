@@ -8,7 +8,7 @@ const auth = require('./middlewares/auth');
 const err = require('./middlewares/errors');
 const { NOTFOUND_ERROR_CODE, AUTH_ERROR_CODE } = require('./errors/errors');
 
-const urlRegExp = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:\/?#[\]@!$&'()*+,;=.]+$/gi;
+const urlRegExp = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:\/?#[\]@!$&'()*+,;=.]+$/;
 
 const app = express();
 
@@ -33,7 +33,7 @@ app.post('/signup', celebrate({
     password: Joi.string().required().min(8),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().$_match(urlRegExp),
+    avatar: Joi.string().test(urlRegExp),
   }),
 }), createUser);
 

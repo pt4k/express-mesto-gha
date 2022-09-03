@@ -90,6 +90,9 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
+    .orFail(() => {
+      throw new AuthError('Неправильные почта или пароль');
+    })
     .then((user) => {
       const token = jwt.sign({ _id: user.id }, 'some-secret-key', { expiresIn: '7d' });
 
@@ -97,9 +100,6 @@ const login = (req, res, next) => {
       res.send({ token });
     })
     .catch((err) => {
-      if (err.code === AUTH_ERROR_CODE) {
-        next(new AuthError('Неправильные почта или пароль'));
-      }
       next(err);
     });
 };

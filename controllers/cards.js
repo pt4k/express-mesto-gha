@@ -1,7 +1,7 @@
 const Card = require('../models/card');
 const NotFoundError = require('../errors/NotFoundError');
 const ValidError = require('../errors/ValidError');
-const ConflictError = require('../errors/ConflictError');
+const NotAvailable = require('../errors/NotAvailable');
 
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
@@ -13,8 +13,9 @@ const createCard = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new ValidError('Переданы некорректные данные при создании карточки.'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -30,18 +31,18 @@ const deleteCard = (req, res, next) => {
       const cardOwner = card.owner.toString().replace('new ObjectId("', '');
 
       if (userId !== cardOwner) {
-        throw new ConflictError('Невозможно удалить карточку другого пользователя.');
+        throw new NotAvailable('Невозможно удалить карточку другого пользователя.');
       }
 
-      card.remove();
-
-      res.send({ data: card });
+      return card.remove()
+        .then(() => res.send({ message: 'Карточка удалена' }));
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new ValidError('Переданы некорректные данные для удаления карточки.'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -68,8 +69,9 @@ const likeCard = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new ValidError('Переданы некорректные данные для выбора карточки.'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -88,8 +90,9 @@ const dislikeCard = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new ValidError('Переданы некорректные данные для выбора карточки.'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 

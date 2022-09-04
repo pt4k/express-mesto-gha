@@ -1,12 +1,10 @@
-const { DEFAULT_ERROR_CODE } = require('../errors/errors');
-
 module.exports = ((err, req, res, next) => {
-  const { statusCode = DEFAULT_ERROR_CODE, message } = err;
+  const { statusCode = 500, message } = err;
 
   res
     .status(statusCode)
     .send({
-      message: statusCode === DEFAULT_ERROR_CODE
+      message: statusCode === 500
         ? 'Ошибка по умолчанию.'
         : message,
     });

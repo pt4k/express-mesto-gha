@@ -2,10 +2,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const ValidError = require('../errors/ValidError');
-const AuthError = require('../errors/AuthError');
 const NotFoundError = require('../errors/NotFoundError');
 const ConflictError = require('../errors/ConflictError');
-const { AUTH_ERROR_CODE } = require('../errors/errors');
 
 const SALT_ROUNDS = 10;
 
@@ -18,17 +16,19 @@ const createUser = (req, res, next) => {
       about: req.body.about,
       avatar: req.body.avatar,
     }))
-    .then((user) => {
-      res.status(201).send(user);
+    .then(({
+      name, about, avatar, email,
+    }) => {
+      res.status(200).send(name, about, avatar, email);
     })
     .catch((err) => {
       if (err.code === 11000) {
         next(new ConflictError('Такой пользователь уже существует'));
-      }
-      if (err.name === 'ValidationError') {
+      } else if (err.name === 'ValidationError') {
         next(new ValidError('Переданы некорректные данные при создании пользователя.'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -45,8 +45,9 @@ const getUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new ValidError('Переданы некорректные данные для поиска пользователя.'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -69,8 +70,9 @@ const patchUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new ValidError('Переданы некорректные данные при обновлении профиля.'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -83,8 +85,9 @@ const patchAvatar = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new ValidError('Переданы некорректные данные при обновлении аватара.'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -95,16 +98,9 @@ const login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign({ _id: user.id }, 'some-secret-key', { expiresIn: '7d' });
 
-      res.cookie('token', token, { httpOnly: true });
       res.send({ token });
     })
-    .catch((err) => {
-      console.log(err);
-      if (err.code === AUTH_ERROR_CODE) {
-        next(new AuthError('Неправильные почта или пароль'));
-      }
-      next(err);
-    });
+    .catch(next);
 };
 
 const getUserMe = (req, res, next) => {
@@ -120,8 +116,9 @@ const getUserMe = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new ValidError('Переданы некорректные данные для поиска пользователя.'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 

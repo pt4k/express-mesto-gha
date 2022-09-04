@@ -1,11 +1,8 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
-const auth = require('../middlewares/auth');
 const {
   getUser, getUsers, patchUser, patchAvatar, getUserMe,
 } = require('../controllers/users');
-
-const urlRegExp = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
 
 router.get('/users', getUsers);
 router.get('/users/me', getUserMe);
@@ -22,7 +19,7 @@ router.patch('/users/me', celebrate({
 }), patchUser);
 router.patch('/users/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().pattern(urlRegExp),
+    avatar: Joi.string().pattern(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/),
   }),
 }), patchAvatar);
 

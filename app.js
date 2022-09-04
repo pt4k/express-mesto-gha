@@ -4,9 +4,9 @@ const { celebrate, Joi, errors } = require('celebrate');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
+const NotFoundError = require('./errors/NotFoundError');
 const auth = require('./middlewares/auth');
 const err = require('./middlewares/errors');
-const { NOTFOUND_ERROR_CODE, AUTH_ERROR_CODE } = require('./errors/errors');
 
 const urlRegExp = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
 
@@ -27,7 +27,7 @@ app.post('/signin', celebrate({
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
+    password: Joi.string().required(),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
     avatar: Joi.string().pattern(urlRegExp),
@@ -35,13 +35,18 @@ app.post('/signup', celebrate({
 }), createUser);
 
 app.use(auth);
-app.use('/', usersRouter, cardsRouter);
+app.use('/', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().pattern(urlRegExp),
+  }),
+}), usersRouter, cardsRouter);
 
-app.use((req, res) => {
-  res.status(AUTH_ERROR_CODE).send({ message: 'Необходима авторизация' });
-});
-app.use((req, res) => {
-  res.status(NOTFOUND_ERROR_CODE).send({ message: 'Страница по указанному маршруту не найдена' });
+app.use((req, res, next) => {
+  next(new NotFoundError('Страница по указанному маршруту не найдена'));
 });
 app.use(errors());
 app.use(err);

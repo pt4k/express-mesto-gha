@@ -8,6 +8,8 @@ const auth = require('./middlewares/auth');
 const err = require('./middlewares/errors');
 const { NOTFOUND_ERROR_CODE, AUTH_ERROR_CODE } = require('./errors/errors');
 
+const urlRegExp = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
+
 const app = express();
 
 const { PORT = 3000 } = process.env;
@@ -19,10 +21,7 @@ app.use(express.json());
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string(),
+    password: Joi.string().required(),
   }),
 }), login);
 app.post('/signup', celebrate({
@@ -31,11 +30,9 @@ app.post('/signup', celebrate({
     password: Joi.string().required().min(8),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string(),
+    avatar: Joi.string().pattern(urlRegExp),
   }),
 }), createUser);
-
-//
 
 app.use(auth);
 app.use('/', usersRouter, cardsRouter);

@@ -1,53 +1,27 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
+const auth = require('../middlewares/auth');
 const {
   getUser, getUsers, patchUser, patchAvatar, getUserMe,
 } = require('../controllers/users');
 
 const urlRegExp = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
 
-router.get('/users', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(urlRegExp),
-  }),
-}), getUsers);
-router.get('/users/me', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(urlRegExp),
-  }),
-}), getUserMe);
-router.get('/users/:id', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(urlRegExp),
+router.get('/users', auth, getUsers);
+router.get('/users/me', auth, getUserMe);
+router.get('/users/:id', auth, celebrate({
+  params: Joi.object().keys({
+    userId: Joi.string().alphanum().length(24),
   }),
 }), getUser);
-router.patch('/users/me', celebrate({
+router.patch('/users/me', auth, celebrate({
   body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(urlRegExp),
   }),
 }), patchUser);
-router.patch('/users/me/avatar', celebrate({
+router.patch('/users/me/avatar', auth, celebrate({
   body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
     avatar: Joi.string().pattern(urlRegExp),
   }),
 }), patchAvatar);

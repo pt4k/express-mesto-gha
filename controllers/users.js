@@ -17,7 +17,12 @@ const createUser = (req, res, next) => {
       avatar: req.body.avatar,
     }))
     .then((user) => {
-      res.status(200).send(user.name, user.about, user.avatar, user.email);
+      res.status(200).send({
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+      });
     })
     .catch((err) => {
       if (err.code === 11000) {

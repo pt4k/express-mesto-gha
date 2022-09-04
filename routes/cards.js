@@ -8,7 +8,7 @@ const {
 router.get('/cards', getCards);
 router.delete('/cards/:id', celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24),
+    id: Joi.string().alphanum().length(24),
   }),
 }), deleteCard);
 router.post('/cards', celebrate({

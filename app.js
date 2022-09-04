@@ -35,15 +35,7 @@ app.post('/signup', celebrate({
 }), createUser);
 
 app.use(auth);
-app.use('/', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(urlRegExp),
-  }),
-}), usersRouter, cardsRouter);
+app.use('/', usersRouter, cardsRouter);
 
 app.use((req, res, next) => {
   next(new NotFoundError('Страница по указанному маршруту не найдена'));

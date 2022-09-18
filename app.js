@@ -20,7 +20,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 
 const options = {
   origin: [
-    'http://pishchenko.mesto.students.nomoredomains.sbs', // порт где фронт
+    'https://pishchenko.mesto.students.nomoredomains.sbs', // порт где фронт
     'https://api.pt4k.mesto.students.nomoredomains.sbs', // созданный доммен для бека
     // 'https://YOUR.github.io',
   ],

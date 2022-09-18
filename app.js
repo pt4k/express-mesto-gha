@@ -20,9 +20,8 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 
 const options = {
   origin: [
-    'https://pishchenko.mesto.students.nomoredomains.sbs', // доммен для  фронт
-    'https://api.pt4k.mesto.students.nomoredomains.sbs', // созданный доммен для бека
-    // 'https://YOUR.github.io',
+    'http://localhost:3005',
+    'https://api.pt4k.mesto.students.nomoredomains.sbs',
   ],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,

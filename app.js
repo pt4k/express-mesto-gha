@@ -22,7 +22,6 @@ const options = {
   origin: [
     'https://pishchenko.mesto.students.nomoredomains.sbs', // доммен для  фронт
     'https://api.pt4k.mesto.students.nomoredomains.sbs', // созданный доммен для бека
-    'Access-Control-Allow-Origin', '*',
     // 'https://YOUR.github.io',
   ],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],

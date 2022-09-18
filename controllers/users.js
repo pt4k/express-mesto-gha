@@ -17,6 +17,7 @@ const createUser = (req, res, next) => {
       avatar: req.body.avatar,
     }))
     .then((user) => {
+      res.set('Access-Control-Allow-Origin', '*');
       res.status(200).send({
         name: user.name,
         about: user.about,
@@ -100,7 +101,7 @@ const login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user.id }, 'some-secret-key', { expiresIn: '7d' });
-
+      res.set('Access-Control-Allow-Origin', '*');
       res.send({ token });
     })
     .catch(next);

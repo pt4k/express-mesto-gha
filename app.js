@@ -22,7 +22,7 @@ const options = {
   origin: [
     'http://pishchenko.mesto.students.nomoredomains.sbs', // порт где фронт
     'https://api.pt4k.mesto.students.nomoredomains.sbs', // созданный доммен для бека
-    ' https://pt4k.github.io/express-mesto-gha/',
+    // 'https://YOUR.github.io',
   ],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   preflightContinue: false,

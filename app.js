@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const { celebrate, Joi, errors } = require('celebrate');
+const cors = require('cors');
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
@@ -13,9 +14,24 @@ const urlRegExp = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'(
 
 const app = express();
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3005 } = process.env;
 
 mongoose.connect('mongodb://localhost:27017/mestodb');
+
+const options = {
+  origin: [
+    'http://localhost:3000', // порт где фронт
+    // 'https://ВАШ ДОМЕЙН С ДОКУМЕНТА', // созданный доммен для бека
+    // 'https://YOUR.github.io',
+  ],
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
+  credentials: true,
+};
+
+app.use('*', cors(options));
 
 app.use(express.json());
 

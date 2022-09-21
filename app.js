@@ -65,11 +65,12 @@ app.post('/signup', celebrate({
 app.use(auth);
 app.use('/', usersRouter, cardsRouter);
 
-app.use(errorLogger);
-
 app.use((req, res, next) => {
   next(new NotFoundError('Страница по указанному маршруту не найдена'));
 });
+
+app.use(errorLogger);
+
 app.use(errors());
 app.use(err);
 

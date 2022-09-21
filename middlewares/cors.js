@@ -1,7 +1,7 @@
 // Массив доменов, с которых разрешены кросс-доменные запросы
 const allowedCors = [
-  'https://praktikum.tk',
-  'http://praktikum.tk',
+  'http://pishchenko.mesto.students.nomoredomains.sbs',
+  'https://pishchenko.mesto.students.nomoredomains.sbs',
   'localhost:3000',
 ];
 

@@ -2,8 +2,6 @@
 const allowedCors = [
   'http://pishchenko.mesto.students.nomoredomains.sbs',
   'https://pishchenko.mesto.students.nomoredomains.sbs',
-  'http://api.pt4k.mesto.students.nomoredomains.sbs',
-  'https://api.pt4k.mesto.students.nomoredomains.sbs',
   'localhost:3005',
 ];
 

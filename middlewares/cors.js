@@ -2,7 +2,7 @@
 const allowedCors = [
   'http://pishchenko.mesto.students.nomoredomains.sbs',
   'https://pishchenko.mesto.students.nomoredomains.sbs',
-  'localhost:3000',
+  'localhost:3005',
 ];
 
 module.exports = (req, res, next) => {

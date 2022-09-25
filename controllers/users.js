@@ -27,8 +27,8 @@ const createUser = (req, res, next) => {
         about: user.about,
         avatar: user.avatar,
         email: user.email,
+        token,
       });
-      res.send({ token });
     })
     .catch((err) => {
       if (err.code === 11000) {

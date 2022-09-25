@@ -62,7 +62,8 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-app.use('/', usersRouter, cardsRouter);
+app.use('/', usersRouter);
+app.use('/', cardsRouter);
 app.use(auth);
 
 app.use((req, res, next) => {

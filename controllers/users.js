@@ -18,11 +18,7 @@ const createUser = (req, res, next) => {
       name: req.body.name,
       about: req.body.about,
       avatar: req.body.avatar,
-    }));
-
-  const userId = req.user._id;
-  const { email, password } = req.body;
-  return User.findById(userId)
+    }))
     .then((user) => {
       const token = jwt.sign({ _id: user.id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
 

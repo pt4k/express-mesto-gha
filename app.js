@@ -34,7 +34,6 @@ const options = {
   credentials: true,
 };
 
-
 app.use('*', cors(options));
 
 app.use(express.json());

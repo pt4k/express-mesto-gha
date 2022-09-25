@@ -18,7 +18,10 @@ const createUser = (req, res, next) => {
       name: req.body.name,
       about: req.body.about,
       avatar: req.body.avatar,
-    }))
+    }));
+
+  const { email, password } = req.body;
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user.id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
 
@@ -27,8 +30,8 @@ const createUser = (req, res, next) => {
         about: user.about,
         avatar: user.avatar,
         email: user.email,
-        token,
       });
+      res.send({ token });
     })
     .catch((err) => {
       if (err.code === 11000) {

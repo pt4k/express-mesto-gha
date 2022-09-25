@@ -46,8 +46,6 @@ app.get('/crash-test', () => {
   }, 0);
 });
 
-app.use(auth);
-
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -65,6 +63,7 @@ app.post('/signup', celebrate({
 }), createUser);
 
 app.use('/', usersRouter, cardsRouter);
+app.use(auth);
 
 app.use((req, res, next) => {
   next(new NotFoundError('Страница по указанному маршруту не найдена'));

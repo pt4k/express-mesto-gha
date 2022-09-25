@@ -20,12 +20,15 @@ const createUser = (req, res, next) => {
       avatar: req.body.avatar,
     }))
     .then((user) => {
+      const token = jwt.sign({ _id: user.id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
+
       res.status(200).send({
         name: user.name,
         about: user.about,
         avatar: user.avatar,
         email: user.email,
       });
+      res.send({ token });
     })
     .catch((err) => {
       if (err.code === 11000) {

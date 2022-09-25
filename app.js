@@ -62,9 +62,9 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-app.use('/', usersRouter);
-app.use('/', cardsRouter);
 app.use(auth);
+
+app.use('/', usersRouter, cardsRouter);
 
 app.use((req, res, next) => {
   next(new NotFoundError('Страница по указанному маршруту не найдена'));
